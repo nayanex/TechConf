@@ -1,11 +1,15 @@
-from app import app, db, queue_client
+import logging
 from datetime import datetime
-from app.models import Attendee, Conference, Notification
-from flask import render_template, session, request, redirect, url_for, flash, make_response, session
+
 from azure.servicebus import Message
+from flask import (flash, make_response, redirect, render_template, request,
+                   session, url_for)
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-import logging
+
+from app import app, db, queue_client
+from app.models import Attendee, Conference, Notification
+
 
 @app.route('/')
 def index():
@@ -96,7 +100,7 @@ def notification():
 
 
 def send_email(email, subject, body):
-    if not app.config.get('SENDGRID_API_KEY')
+    if not app.config.get('SENDGRID_API_KEY'):
         message = Mail(
             from_email=app.config.get('ADMIN_EMAIL_ADDRESS'),
             to_emails=email,
