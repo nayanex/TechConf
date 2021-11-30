@@ -10,7 +10,7 @@ app.secret_key = app.config.get("SECRET_KEY")
 
 servicebus_client = ServiceBusClient.from_connection_string(
     # @conn_str=app.config.get("SERVICE_BUS_CONNECTION_STRING"), logging_enable=True
-    conn_str="Endpoint=sb://tech-conf.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Vs/bN7OaS0UHa3FoF0ecM5/xPxwey99PsNezMMq7xkY=",
+    conn_str=app.config.get("SERVICE_BUS_CONNECTION_STRING"),
     logging_enable=True,
 )
 
