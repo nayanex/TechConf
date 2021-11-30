@@ -25,7 +25,7 @@ class BaseConfig:
 
     # for local host if Azure functions served locally
     # API_URL = "http://localhost:7071/api"
-    API_URL = "https://tech-conf-func-app.azurewebsites.net"
+    API_URL = "https://tech-conf-func-app.azurewebsites.net/api"
 
 
 class DevelopmentConfig(BaseConfig):
