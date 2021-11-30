@@ -23,6 +23,7 @@ def send_email(to_email, subject, msg):
         print(e.message)
         logging.error(e.message)
 
+
 # def send_email(email, subject, body):
 #     if not app.config.get('SENDGRID_API_KEY'):
 #         message = Mail(

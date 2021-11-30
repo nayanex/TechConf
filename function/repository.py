@@ -46,10 +46,15 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def _update(self, id, updated_props):
         """Update an entity with the given properties."""
-        entity = self.session.query(self.model).filter_by(id=id).one()
+        # entity = self.session.query(self.model).filter_by(id=id).one()
 
-        for key, value in updated_props.items():
-            if not hasattr(entity, key):
-                raise KeyError(key)
-            setattr(entity, key, value)
-        self.session.flush()
+        self.session.query(self.model).filter(self.model.id == id).update(updated_props)
+
+        #self.session.execute()
+        # self.session.update
+
+        # for key, value in updated_props.items():
+        #     if not hasattr(entity, key):
+        #         raise KeyError(key)
+        #     setattr(entity, key, value)
+        # self.session.flush()

@@ -21,8 +21,8 @@ metadata = MetaData()
 mapper_registry = registry()
 
 
-notifications = Table(
-    "notifications",
+notification = Table(
+    "notification",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("status", String(31), nullable=False),
@@ -32,8 +32,8 @@ notifications = Table(
     Column("subject", Date, nullable=False),
 )
 
-attendees = Table(
-    "attendees",
+attendee = Table(
+    "attendee",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("first_name", String(255), nullable=False),
@@ -49,8 +49,8 @@ attendees = Table(
     Column("comments", String(255), nullable=True),
 )
 
-conferences = Table(
-    "conferences",
+conference = Table(
+    "conference",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String(100), nullable=True),
@@ -63,6 +63,6 @@ conferences = Table(
 
 def start_mappers():
     logger.info("Starting mappers")
-    mapper_registry.map_imperatively(model.Notification, notifications)
-    mapper_registry.map_imperatively(model.Attendee, attendees)
-    mapper_registry.map_imperatively(model.Conference, conferences)
+    mapper_registry.map_imperatively(model.Notification, notification)
+    mapper_registry.map_imperatively(model.Attendee, attendee)
+    mapper_registry.map_imperatively(model.Conference, conference)

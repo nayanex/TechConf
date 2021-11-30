@@ -1,9 +1,14 @@
 import os
 
+from dotenv import load_dotenv
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, ".env"))
+
 
 def get_postgres_uri():
     host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = 54321 if host == "localhost" else 5432
+    port = os.environ.get("POSTGRES_PORT")
     password = os.environ.get("POSTGRES_PW")
     db_name = os.environ.get("POSTGRES_DB")
     user = os.environ.get("POSTGRES_USER")

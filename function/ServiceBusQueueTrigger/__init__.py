@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 import azure.functions as func
-import sendgrid
+import alert
 import psycopg2
 
 import orm
@@ -16,7 +16,7 @@ def main(msg: func.ServiceBusMessage):
     )
 
     # TODO: Get connection to database
-    uow: unit_of_work.AbstractUnitOfWork
+    uow: unit_of_work.AbstractUnitOfWork = unit_of_work.SqlAlchemyUnitOfWork()
     orm.start_mappers()
 
     try:
@@ -27,8 +27,8 @@ def main(msg: func.ServiceBusMessage):
             attendees = uow.attendees.get_all()
             # TODO: Loop through each attendee and send an email with a personalized subject
             for attendee in attendees:
-                subject = '{}: {}'.format(attendee.first_name, notification.subject)
-                sendgrid.send_email(attendee.email, subject, notification.message)
+                subject = "{}: {}".format(attendee.first_name, notification.subject)
+                alert.send_email(attendee.email, subject, notification.message)
 
             # TODO: Update the notification table by setting the completed date and updating the status with the total number of attendees notified
             uow.notifications.update(
@@ -38,6 +38,7 @@ def main(msg: func.ServiceBusMessage):
                     "completed_date": datetime.utcnow(),
                 },
             )
+            uow.commit()
 
     except (Exception, psycopg2.DatabaseError) as error:
         logging.error(error)
@@ -47,20 +48,20 @@ def main(msg: func.ServiceBusMessage):
 # https://github.com/sendgrid/sendgrid-python
 
 ##################################################
-            ## TODO: Refactor This logic into an Azure Function
-            ## Code below will be replaced by a message queue
-            #################################################
-            # attendees = Attendee.query.all()
+## TODO: Refactor This logic into an Azure Function
+## Code below will be replaced by a message queue
+#################################################
+# attendees = Attendee.query.all()
 
-            # for attendee in attendees:
-            #     subject = '{}: {}'.format(attendee.first_name, notification.subject)
-            #     send_email(attendee.email, subject, notification.message)
+# for attendee in attendees:
+#     subject = '{}: {}'.format(attendee.first_name, notification.subject)
+#     send_email(attendee.email, subject, notification.message)
 
-            # notification.completed_date = datetime.utcnow()
-            # notification.status = 'Notified {} attendees'.format(len(attendees))
-            # db.session.commit()
-            # TODO Call servicebus queue_client to enqueue notification ID
+# notification.completed_date = datetime.utcnow()
+# notification.status = 'Notified {} attendees'.format(len(attendees))
+# db.session.commit()
+# TODO Call servicebus queue_client to enqueue notification ID
 
-            #################################################
-            ## END of TODO
-            #################################################
+#################################################
+## END of TODO
+#################################################

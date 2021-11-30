@@ -1,6 +1,4 @@
-import os
-
-from azure.servicebus import QueueClient
+from azure.servicebus import ServiceBusClient
 from flask import Flask, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,11 +7,11 @@ app.config.from_object("config.DevelopmentConfig")
 
 app.secret_key = app.config.get("SECRET_KEY")
 
-#'Endpoint=Endpoint=sb://tech-conf.servicebus.windows.net/'
-#'notificationqueue'
-queue_client = QueueClient.from_connection_string(
-    app.config.get("SERVICE_BUS_CONNECTION_STRING"),
-    app.config.get("SERVICE_BUS_QUEUE_NAME"),
+
+servicebus_client = ServiceBusClient.from_connection_string(
+    # @conn_str=app.config.get("SERVICE_BUS_CONNECTION_STRING"), logging_enable=True
+    conn_str="Endpoint=sb://tech-conf.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Vs/bN7OaS0UHa3FoF0ecM5/xPxwey99PsNezMMq7xkY=",
+    logging_enable=True,
 )
 
 db = SQLAlchemy(app)
