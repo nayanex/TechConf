@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from datetime import date
-from repository import SqlAlchemyRepository
 
 
-class Notification(SqlAlchemyRepository):
+class Notification:
     def __init__(
         self,
         status: str,
@@ -20,7 +19,7 @@ class Notification(SqlAlchemyRepository):
         self.completed_date = completed_date
 
 
-class Attendee(SqlAlchemyRepository):
+class Attendee:
     def __init__(
         self,
         first_name: str,
@@ -51,7 +50,7 @@ class Attendee(SqlAlchemyRepository):
         return f"<Attendee {self.first_name}>"
 
 
-class Conference(SqlAlchemyRepository):
+class Conference:
     def __init__(
         self,
         name: str,
@@ -65,4 +64,3 @@ class Conference(SqlAlchemyRepository):
         self.date = date
         self.price = price
         self.address = address
-

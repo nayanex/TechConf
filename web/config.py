@@ -23,6 +23,10 @@ class BaseConfig:
     ADMIN_EMAIL_ADDRESS = "info@techconf.com"
     SENDGRID_API_KEY = ""  # Configuration not required, required SendGrid Account
 
+    # for local host if Azure functions served locally
+    # API_URL = "http://localhost:7071/api"
+    API_URL = "http://localhost:7071/api"
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

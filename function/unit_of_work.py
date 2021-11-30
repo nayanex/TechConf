@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import abc
-import repository
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 import config
+import model
+import repository
 
 
 class AbstractUnitOfWork(abc.ABC):
     notifications: repository.AbstractRepository
+    attendees: repository.AbstractRepository
 
     def __enter__(self) -> AbstractUnitOfWork:
         return self
@@ -45,7 +47,14 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 
     def __enter__(self):
         self.session = self.session_factory()  # type: Session
-        self.notifications = repository.SqlAlchemyRepository(self.session)
+        self.notifications = repository.SqlAlchemyRepository(
+            self.session,
+            model.Notification,
+        )
+        self.attendees = repository.SqlAlchemyRepository(
+            self.session,
+            model.Attendee,
+        )
         return super().__enter__()
 
     def __exit__(self, *args):

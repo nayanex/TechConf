@@ -1,6 +1,6 @@
 import logging
 
-from domain import model
+import model
 from sqlalchemy import (
     Boolean,
     Column,

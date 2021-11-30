@@ -1,11 +1,11 @@
 import logging
+import requests
+import config
 from datetime import datetime
 
 from azure.servicebus import Message
 from flask import (flash, make_response, redirect, render_template, request,
                    session, url_for)
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
 
 from app import app, db, queue_client
 from app.models import Attendee, Conference, Notification
@@ -37,7 +37,7 @@ def registration():
             session['message'] = 'Thank you, {} {}, for registering!'.format(attendee.first_name, attendee.last_name)
             return redirect('/Registration')
         except:
-            logging.error('Error occured while saving your information')
+            logging.error('Error occurred while saving your information')
 
     else:
         if 'message' in session:
@@ -75,16 +75,12 @@ def notification():
             ## TODO: Refactor This logic into an Azure Function
             ## Code below will be replaced by a message queue
             #################################################
-            attendees = Attendee.query.all()
-
-            for attendee in attendees:
-                subject = '{}: {}'.format(attendee.first_name, notification.subject)
-                send_email(attendee.email, subject, notification.message)
-
-            notification.completed_date = datetime.utcnow()
-            notification.status = 'Notified {} attendees'.format(len(attendees))
-            db.session.commit()
             # TODO Call servicebus queue_client to enqueue notification ID
+            
+            with queue_client:
+                sender = queue_client.get_queue_sender(queue_name=config.QUEUE_NAME)
+                with sender:
+                    send_single_message(sender)
 
             #################################################
             ## END of TODO
@@ -98,14 +94,9 @@ def notification():
         return render_template('notification.html')
 
 
-
-def send_email(email, subject, body):
-    if not app.config.get('SENDGRID_API_KEY'):
-        message = Mail(
-            from_email=app.config.get('ADMIN_EMAIL_ADDRESS'),
-            to_emails=email,
-            subject=subject,
-            plain_text_content=body)
-
-        sg = SendGridAPIClient(app.config.get('SENDGRID_API_KEY'))
-        sg.send(message)
+def send_single_message(sender):
+    # create a Service Bus message
+    message = Message("Single Message")
+    # send the message to the queue
+    sender.send_messages(message)
+    print("Sent a single message")
