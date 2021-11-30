@@ -63,9 +63,15 @@ Complete a month cost analysis of each Azure resource to give an estimate total 
 
 | Azure Resource | Service Tier | Monthly Cost |
 | ------------ | ------------ | ------------ |
-| *Azure Postgres Database* |     |              |
-| *Azure Service Bus*   |         |              |
+| *Azure Postgres Database* |  Basic   |   ~$26/month           |
+| *Azure Service Bus*   |   Basic      |   $0.05/Million/Month           |
 | ...                   |         |              |
 
 ## Architecture Explanation
 This is a placeholder section where you can provide an explanation and reasoning for your architecture selection for both the Azure Web App and Azure Function.
+
+> The current architecture is more cost-effective because now When the admin sends out notifications, the app won't take a long time because it won't loop through all attendees, resulting in some HTTP timeout exceptions anymore.
+
+> Using Azure Web App allows scalability to handle user load at peak
+
+> Also, The current architecture is more cost-effective, because it uses on demand services like Azure App Services
